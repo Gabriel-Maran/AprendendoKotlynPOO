@@ -32,7 +32,7 @@ fun main() {
 //      Se nome for null, nome?.length retorna null sem erro.
     }
 
-    fun operadorForçaNaoNulo() {
+    fun operadorForcaNaoNulo() {
         val numero: Int = readLine()!!.toInt()
 //      Se readLine() for null, o programa crasha com erro de NullPointerException.
 //      *Use com cuidado! Só use !! se tiver certeza que o valor nunca será null.
