@@ -16,5 +16,5 @@ fun main(){
         fatorial *= i
     }
 
-    println("O fatorial é: "+fatorial)
+    println("O fatorial de $numero é $fatorial")
 }
