@@ -60,5 +60,4 @@ fun main() {
         println(resultado) // Retorna o dobro do número digitado
 //      O run evita criar uma variável temporária para num, tornando o código mais limpo.
     }
-
 }
