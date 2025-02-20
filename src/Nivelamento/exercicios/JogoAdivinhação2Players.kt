@@ -3,8 +3,6 @@ package Nivelamento.exercicios
 fun main(){
     val numRandom1 = (1..100).random()
     val numRandom2 = (1..100).random()
-    println(numRandom1)
-    println(numRandom2)
     println("Jogador 1, por favor, informe seu nome: ")
     val player1 = readLine().toString()
     println("Jogador 2, por favor, informe seu nome: ")
