@@ -3,7 +3,6 @@ package Aula2.exercicios
 fun main() {
     var escolha = 0
     val escolhaRandom = (1..3).random()
-    println(escolhaRandom)
     do {
         println("Pedra, papel, tesoura")
         println("Digita 1 para pedra, 2 para papel e 3 para tesoura")
