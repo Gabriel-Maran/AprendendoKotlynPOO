@@ -1,4 +1,4 @@
-package Aula1.exercicios
+package Nivelamento.exercicios
 
 fun main() {
     contadorDeVogais()

@@ -1,4 +1,4 @@
-package Aula2.exercicios
+package Nivelamento.exercicios
 
 fun main() {
     var escolha = 0

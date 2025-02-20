@@ -1,6 +1,4 @@
-package Aula1.exercicios
-
-import java.util.Scanner
+package Nivelamento.exercicios
 
 fun main(){
 

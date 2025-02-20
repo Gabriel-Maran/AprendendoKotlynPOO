@@ -1,4 +1,4 @@
-package Aula1.conteudo
+package Nivelamento.conteudo
 
 fun main() {
     fun lerString() {
