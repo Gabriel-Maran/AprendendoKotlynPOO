@@ -7,12 +7,19 @@ fun main() {
 //Objetivo: fazer com a menor quantidade de variaveis possivel
 //    println(fibonacciPrimeiraMetodo())
 //    println(fibonacciSegundaMetodo())
-    println(fibonacciTerceiroMetodo(10))
+//    println(fibonacciTerceiroMetodo(10))
+    val regex = Regex("^(?:[2-9]|\\d{2,})$")
+    var num:String
+    do{
+        println("Digite uma casa da sequencia de Fibonacci: ")
+        num = readln()
+    }while (!regex.matches(num))
+    println(fibonacciTerceiroMetodo(num.toInt()))
 
 }
 
 fun fibonacciTerceiroMetodo(posicao: Int): Int {
-    //0 variaveis
+    //1 variavel
     when {
         posicao <= 0 -> return 0;
         posicao == 1 -> return 1;
