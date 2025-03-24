@@ -61,8 +61,12 @@ private fun cadastrar() {
 }
 
 private fun listar() {
-    for ((i, convidado) in listaConvidados.withIndex()) {
-        println("Convidado${i + 1}: $convidado")
+    if (listaConvidados.isEmpty()) {
+        println("Lista vazia")
+        return
+    }
+    listaConvidados.forEach {
+        println("Nome: ${it.nome}, Presente: ${it.presente}, Restrições alimentares: ${it.alimentar}, Presença: ${it.presenca}")
     }
 }
 
@@ -117,12 +121,15 @@ private fun editar() {
 
 private fun excluir() {
     listar()
-    println("Qual usuário você deseja excluir?(Ex:1, para o primeiro)")
-    var escolha: Int = readlnOrNull()?.toIntOrNull() ?: -1
-    if (escolha < 1) {
-        println("Escolha invalida")
-        return
+    if (listaConvidados.isNotEmpty()) {
+        println("Qual usuário você deseja excluir?(Ex:1, para o primeiro)")
+        var escolha: Int = readlnOrNull()?.toIntOrNull() ?: -1
+        if (escolha < 1 || escolha > listaConvidados.size) {
+            println("Escolha invalida")
+            return
+        }
+        listaConvidados.removeAt((escolha - 1))
+        println("Usuário excluido com sucesso")
     }
-    listaConvidados.removeAt((escolha - 1))
-    println("Usuário excluido com sucesso")
+    return
 }
