@@ -5,6 +5,8 @@ var derrotasPlayerForca = 0
 val regexOnlyWordsUsuario = Regex("^[A-Za-z]+\$")
 val regexOnlyCharUsuario = Regex("^[A-Za-z]\$")
 var win = false
+var limiteErros = 8
+
 
 fun main() {
     val regexEscolha = Regex(pattern = "^[^1-4]$")
@@ -39,17 +41,20 @@ fun placarForca() {
 
 fun jogarForca() {
     //Pega uma palavra aleatorio(com dificuldade variada) ou uma palavra escrita por um usuário
-    var palavra = userSetWord().uppercase()
+    val palavra = userSetWord().uppercase()
 
-    var auxCharArray = CharArray(palavra.length) { '_' }
+    val auxCharArray = CharArray(palavra.length) { '_' }
     var diminuirTentativas = true
     var palavraChute = " "
+    var erros = 0
     var charChute = ' '
     var escolhaDigita = 0
-    var erros = 0
+    println("========== PALAVRA: =============")
+    println(auxCharArray)
+    println("=================================")
     do {
         println("======== Jogo ========")
-        println("Erros: $erros/5")
+        println("Erros: $erros/$limiteErros")
         do {
             println("Digite 1 para chutar uma letra ou 2 para chutar uma palavra")
             escolhaDigita = readlnOrNull()?.toIntOrNull() ?: 0
@@ -84,7 +89,9 @@ fun jogarForca() {
                 //Se a letra não for encontrada, será aumetada a quantidade de erros em +1
                 if(diminuirTentativas) erros += 1
                 //printa como o jogo está no momento, para visualização do usuário
+                println("========== PALAVRA: =============")
                 println(auxCharArray)
+                println("=================================")
                 diminuirTentativas = true
             }
 
@@ -107,8 +114,8 @@ fun jogarForca() {
                 }
             }
         }
-    } while (erros < 5 && !win)
-    if (erros == 5) {
+    } while (erros < limiteErros && !win)
+    if (erros == limiteErros) {
         println("Você perdeu, a palavra era $palavra")
         derrotasPlayerForca += 1
     } else {
@@ -148,18 +155,21 @@ fun userSetWord(): String {
                 1 -> {
                     //Gera palavra dificuldade facil
                     palavra = gerarWord.gerarFacil()
+                    limiteErros = 8
                     return palavra
                 }
 
                 2 -> {
                     //Gera palavra dificuldade media
                     palavra = gerarWord.gerarMedio()
+                    limiteErros = 6
                     return palavra
                 }
 
                 3 -> {
                     //Gera palavra dificuldade dificil
                     palavra = gerarWord.gerarDificil()
+                    limiteErros = 4
                     return palavra
                 }
             }
