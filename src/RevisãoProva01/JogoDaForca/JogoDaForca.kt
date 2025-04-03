@@ -2,10 +2,11 @@ package RevisãoProva01.JogoDaForca
 
 var vitoriasPlayerForca = 0
 var derrotasPlayerForca = 0
-val regexOnlyWordsUsuario = Regex("^[A-Za-z]+\$")
-val regexOnlyCharUsuario = Regex("^[A-Za-z]\$")
+val regexWordsUsuario = Regex("^[A-Za-z]+\$")
+
+//val regexOnlyCharUsuario = Regex("^[A-Za-z]\$")
 var win = false
-var limiteErros = 8
+var limiteErros = 6
 
 
 fun main() {
@@ -19,7 +20,7 @@ fun main() {
             println("Digite 3 para ver o placar")
             println("Digite 4 para sair")
             escUsuario = readlnOrNull() ?: "-1"
-            if(escUsuario.matches(regexEscolha)){
+            if (escUsuario.matches(regexEscolha)) {
                 println("ERRO! Digite um valor valido, de 1-4")
             }
         } while (escUsuario.matches(regexEscolha))
@@ -42,13 +43,13 @@ fun placarForca() {
 fun jogarForca() {
     //Pega uma palavra aleatorio(com dificuldade variada) ou uma palavra escrita por um usuário
     val palavra = userSetWord().uppercase()
-
+    var chute: String = " "
     val auxCharArray = CharArray(palavra.length) { '_' }
     var diminuirTentativas = true
-    var palavraChute = " "
+//    var palavraChute = " "
     var erros = 0
-    var charChute = ' '
-    var escolhaDigita = 0
+    var charChute:Char = ' '
+//    var escolhaDigita = 0
     println("========== PALAVRA: =============")
     println(auxCharArray)
     println("=================================")
@@ -56,65 +57,47 @@ fun jogarForca() {
         println("======== Jogo ========")
         println("Erros: $erros/$limiteErros")
         do {
-            println("Digite 1 para chutar uma letra ou 2 para chutar uma palavra")
-            escolhaDigita = readlnOrNull()?.toIntOrNull() ?: 0
-            if(escolhaDigita < 1 || escolhaDigita > 2){
-                println("ERRO! Digite um valor valido, de 1-2")
+            println("Digite UMA palavra ou UMA letra")
+            chute = readlnOrNull()?.trim()?.uppercase() ?: " "
+            if (!chute.matches(regexWordsUsuario)) {
+                println("Erro: Digite UMA palavra ou UMA letra. Tente novamente!")
             }
-        } while (escolhaDigita < 1 || escolhaDigita > 2)
-        when (escolhaDigita) {
-            1 -> {
-                do {
-                    println("Digite a letra: ")
-                    val input = readlnOrNull() ?: ""
-                    charChute = input.firstOrNull() ?: ' '
-
-                    // Verifica se o input tem 1 caractere E se é uma letra
-                    if (input.length != 1 || !charChute.toString().matches(regexOnlyCharUsuario)) {
-                        println("Erro: Digite apenas UMA letra (A-Z). Tente novamente!")
-                    }
-                } while (!charChute.toString().matches(regexOnlyCharUsuario))
-                //Este for percorre a palavra, em forrmato charArray e tenta achar o char digitado pelo usuario dentro do array
-                //Caso ache, ele troca a posição encontrada na palavra no auxCharArray pela letra
-                //Ex: "Palavra" -> usuario digita 'p' -> sistema encontra na posição '0' -> substitui 'p' na posição 0 do auxCharArray
-                for((index:Int, letra:Char) in palavra.toCharArray().withIndex()) {
-                    charChute = charChute.uppercaseChar()
-                    if(letra == charChute){
-                        auxCharArray[index] = letra
+        } while (!chute.matches(regexWordsUsuario))
+        if (chute.length > 1) {
+            if (chute == palavra) {
+                win = true
+                println("Vitoria")
+            } else { // caso elas não sejam iguais, a quantidade de erros aumenta
+                erros += 1
+            }
+        } else {
+            charChute = chute[0]
+//            Este for percorre a palavra, em formato charArray e tenta achar o char digitado pelo usuario dentro do array
+//             Caso ache, ele troca a posição encontrada na palavra no auxCharArray pela letra
+//            Ex: "Palavra" -> usuario digita 'p' -> sistema encontra na posição '0' -> substitui 'p' na posição 0 do auxCharArray
+            for ((index: Int, letra: Char) in palavra.toCharArray().withIndex()) {
+                if (letra == charChute) {
+                    if(auxCharArray[index] == letra){
+                        println("Digite uma letra diferente!")
                         diminuirTentativas = false
+                        break
                     }
-                }
-                //Verifica se todas as letras da variavel apalvra e o auxCharArray são iguais, caso seja, o jogo acaba
-                win = auxCharArray.contentEquals(palavra.toCharArray())
-                //Se a letra não for encontrada, será aumetada a quantidade de erros em +1
-                if(diminuirTentativas) erros += 1
-                //printa como o jogo está no momento, para visualização do usuário
-                println("========== PALAVRA: =============")
-                println(auxCharArray)
-                println("=================================")
-                diminuirTentativas = true
-            }
-
-            2 -> {
-                do {
-                    println("Digite a letra: ")
-                    palavraChute = readlnOrNull() ?: " "
-
-                    // Verifica se o input tem 1 caractere E se é uma letra
-                    if (!palavraChute.matches(regexOnlyWordsUsuario)) {
-                        println("Erro: Digite UMA palavra. Tente novamente!")
-                    }
-                } while (!palavraChute.matches(regexOnlyWordsUsuario))
-                //compara as duas variaveis são iguais, caso sejam, o jogo acaba
-                if (palavraChute.uppercase() == palavra.uppercase()) {
-                    win = true
-                    println("Vitoria")
-                } else { // caso elas não sejam iguais, a quantidade de erros aumenta
-                    erros += 1
+                    auxCharArray[index] = letra
+                    diminuirTentativas = false
                 }
             }
+//            Verifica se todas as letras da variavel apalvra e o auxCharArray são iguais, caso seja, o jogo acaba
+            win = auxCharArray.contentEquals(palavra.toCharArray())
+            //Se a letra não for encontrada, será aumetada a quantidade de erros em +1
+            if (diminuirTentativas) erros += 1
+            //printa como o jogo está no momento, para visualização do usuário
+            println("========== PALAVRA: =============")
+            println(auxCharArray)
+            println("=================================")
+            diminuirTentativas = true
         }
     } while (erros < limiteErros && !win)
+
     if (erros == limiteErros) {
         println("Você perdeu, a palavra era $palavra")
         derrotasPlayerForca += 1
@@ -130,8 +113,8 @@ fun userSetWord(): String {
     var palavra: String = "Vazio"
     do {
         println("Escolha o modo de Jogo:(1 ou 2)")
-        println(" 1 -Usuário digita a palavra")
-        println(" 2 -Palavra gerada aleatóriamente")
+        println(" 1 - Usuário digita a palavra")
+        println(" 2 - Palavra gerada aleatóriamente")
         //Pega o estilo de jogo, como random word ou written word
         escolhaJogo = readlnOrNull()?.toIntOrNull() ?: 0
     } while (escolhaJogo < 1 || escolhaJogo > 2)
@@ -139,6 +122,7 @@ fun userSetWord(): String {
         1 -> {
             //Usuário escreve uma palavra
             palavra = gerarWord.usuarioDigita()
+            println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
             return palavra
         }
 
@@ -268,7 +252,7 @@ class Words() {
             println("Digite a palavra que deseja que o Player descubra!")
             //recolhe a palava que o usuario digita para ser usada no jogo
             palavraUsuario = readlnOrNull() ?: ""
-        } while (!palavraUsuario.matches(regexOnlyWordsUsuario))
+        } while (!palavraUsuario.matches(regexWordsUsuario))
         //retorna a palavra que um dos usuarios escolheu para o jogo
         return palavraUsuario
     }
