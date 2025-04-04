@@ -1,4 +1,4 @@
-package RevisãoProva01.JogoDaForca
+package RevisãoProva01
 
 var vitoriasPlayerForca = 0
 var derrotasPlayerForca = 0

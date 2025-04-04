@@ -1,4 +1,4 @@
-package RevisãoProva01.PedraPapelTesoura
+package RevisãoProva01
 
 val regexPPT = Regex(pattern = "^[^1-3]$")
 var vitUsuarioPPT = 0
