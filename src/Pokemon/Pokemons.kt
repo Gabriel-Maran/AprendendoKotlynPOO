@@ -26,6 +26,22 @@ val superEfetivo = mapOf(
 //    "VENENO" to superEfetivo["VENENO"]
 //)
 
+fun main() {
+    val isSuperEf = verificadorIsSuperEfetivo(bulbasaur["GRAMA"], blastoise.keys.toList())
+    println(isSuperEf)
+}
+
+private fun verificadorIsSuperEfetivo(pAtaque: List<String>?, pDefesa: List<String>): Boolean {
+    //Modelo de passagem de valor
+    //val isSuperEf = verificadorIsSuperEfetivo(bulbasaur["GRAMA"], blastoise.keys.toList())
+    if (pAtaque.isNullOrEmpty() || pDefesa.isEmpty()) {
+        println("Erro, valor de ataque ou/e defesa nulo/vazio")
+        return false
+    }
+    return pAtaque.any() { it in pDefesa }
+}
+
+
 val bulbasaur = mapOf(
     "GRAMA" to superEfetivo["GRAMA"],
     "VENENO" to superEfetivo["VENENO"]
