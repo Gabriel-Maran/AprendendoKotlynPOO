@@ -79,8 +79,8 @@ private fun listar() {
 }
 
 private fun editar() {
-    //Sendo feito...
-    val regex = Regex(pattern = "^[^1-4]$")
+    val regexLetras = Regex("^[A-Za-z]+\$")
+    val regexUmQuatro = Regex(pattern = "^[1-4]$")
     listar()
     println("Qual usuário você deseja editar?(Ex:1, para o primeiro)")
     var escolhaUsuario: Int = readlnOrNull()?.toIntOrNull() ?: 0
@@ -94,7 +94,7 @@ private fun editar() {
     println("O que você deseja editar?\n1-nome\n2-presente\n3-restição alimentar\n4-presença")
     val aux = readlnOrNull()?.toString() ?: "0"
     val escolhaCampoEdicao: Int = aux.toIntOrNull() ?: 0
-    if (regex.matches(aux)) {
+    if (!regexUmQuatro.matches(aux)) {
         println("Escolha invalida")
         return
     }
@@ -103,7 +103,9 @@ private fun editar() {
         1 -> {
             println("Digite o novo nome: ")
             convidado = listaConvidados.get(escolhaUsuario)
-            convidado.nome = readln()
+            do {
+                convidado.nome = readln()
+            } while (!convidado.nome.matches(regexLetras))
         }
 
         2 -> {
@@ -120,8 +122,11 @@ private fun editar() {
 
         4 -> {
             println("Digite a presença: (S/N)")
-            convidado = listaConvidados.get(escolhaUsuario)
-            val presenca: Char = readlnOrNull()?.get(0) ?: 'N'
+            var presenca:Char = 'N'
+            do{
+                convidado = listaConvidados.get(escolhaUsuario)
+                presenca = readlnOrNull()?.get(0)?.uppercaseChar() ?: 'N'
+            }while (! (presenca == 'S' || presenca == 'N'))
             convidado.presenca = presenca.uppercaseChar() == 'S'
         }
     }
@@ -156,7 +161,7 @@ private fun buscar() {
         }
     } while (!nomeBuscado.matches(regex))
     listaConvidados.forEach { convidado ->
-        if (convidado.nome.contains(nomeBuscado)) {
+        if (convidado.nome.uppercase().contains(nomeBuscado.uppercase())) {
             println("Posição: $i; nome buscado: $nomeBuscado")
         }
         i++
