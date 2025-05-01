@@ -1,6 +1,7 @@
 package Pokemomons
 
 import RevisãoProva01.listPositivos
+
 val vantagensTipos = mapOf(
     "fogo" to listOf("grama", "inseto", "gelo"),
     "água" to listOf("fogo", "pedra", "terra"),
@@ -329,85 +330,83 @@ var player2 = ""
 
 fun main() {
     getNomePlayers()
-    pokemonsPlayer1 = formarTime();
-    pokemonsPlayer2 = formarTime();
+    pokemonsPlayer1 = formarTime(player1);
+    pokemonsPlayer2 = formarTime(player2);
     determinaVencedor()
 }
 
 //Com base no resultado de batalha, determina o vencedor
-fun determinaVencedor(){
+fun determinaVencedor() {
     var vitoriasP1 = 0
     var vitoriasP2 = 0
-    for(i in 0..2){
-        println("========= ${i+1}ª batalha =========")
+    for (i in 0..2) {
+        println("========= ${i + 1}ª batalha =========")
+        val (nome1, tipos1) = pokemonsPlayer1[i]
+        val (nome2, tipos2) = pokemonsPlayer2[i]
         println("${pokemonsPlayer1[i].first} VS ${pokemonsPlayer2[i].first}")
-        val nome1 = pokemonsPlayer1[i].first
-        val tipos1 = pokemonsPlayer1[i].second.keys.toList()
-
-        val nome2 = pokemonsPlayer2[i].first
-        val tipos2 = pokemonsPlayer2[i].second.keys.toList()
 
         val resultado = batalha(tipos1, tipos2)
 
-        when(resultado){
-            1->{
+        when (resultado) {
+            1 -> {
                 println("Vencedor $player1")
                 vitoriasP1++
             }
-            2->{
+
+            2 -> {
                 println("Vencedor $player2")
                 vitoriasP2++
             }
+
             else -> println("Empate")
         }
     }
     println("=========== Resultado Final ===========")
-    when{
-        vitoriasP1>vitoriasP2 -> println("Vencedor $player1")
-        vitoriasP1<vitoriasP2 -> println("Vencedor $player2")
+    when {
+        vitoriasP1 > vitoriasP2 -> println("Vencedor $player1")
+        vitoriasP1 < vitoriasP2 -> println("Vencedor $player2")
         else -> println("Empate")
     }
     println("=======================================")
 }
 
 //Realiza a batalha entre os pokemons, para ver quem irá ganhar
-fun batalha(tipos1:List<String>, tipos2:List<String>): Int {
-    var vantagemP1 = 0
-    var vantagemP2 = 0
-        for(t1 in tipos1){
-            val vantagemT1 = vantagensTipos[t1] ?: continue
-            for(t2 in tipos2){
-                if(t2 in vantagemT1) vantagemP1++
-            }
-        }
+fun batalha(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String>>): Int {
+    var v1 = 0
+    var v2 = 0
 
-        for(t2 in tipos2){
-            val vantagemT2 = vantagensTipos[t2] ?: continue
-            for(t1 in tipos1){
-                if(t1 in vantagemT2) vantagemP2++
-            }
+    for (listaSuper in tipos1.values) {
+        for (t2 in tipos2.keys) {
+            if (listaSuper.contains(t2)) v1++
         }
-        return when {
-            vantagemP1 > vantagemP2 -> 1
-            vantagemP2 > vantagemP1 -> 1
-            else -> 0
+    }
+    for (listaSuper in tipos2.values) {
+        for (t1 in tipos1.keys) {
+            if (listaSuper.contains(t1)) v2++
         }
+    }
+    return when {
+        v1 > v2 -> 1
+        v2 > v1 -> 2
+        else -> 0
+    }
 }
 
 //Cada vez que chamada, monta um time, baseado nas escolhas dos jodaores
 //Utilizada para definir os pokemons que participarão das batalhas
-fun formarTime(): MutableList<Pair<String, Map<String, List<String>>>> {
+fun formarTime(player: String): MutableList<Pair<String, Map<String, List<String>>>> {
     getListaPokemons()
     val pokemonsEscolhidos = mutableListOf<Pair<String, Map<String, List<String>>>>()
     var num: Int
     repeat(3) {
         do {
-            print("Digite o número do Pokémon (1–151): ")
+            println("$player, digite o pokemons que deseja, entre os número 1–151.: ")
+            println("Ex: 1 - Bulbasaur")
             num = readLine()?.toIntOrNull() ?: -1
         } while (num < 1 || num > 151)
         val nome = listaNomesPokemons[num]!!
         var tipoMap = emptyMap<String, List<String>>()
-        if(pokedex[num] != null){
+        if (pokedex[num] != null) {
             tipoMap = pokedex[num]!!.mapValues { it.value!! }
         }
         pokemonsEscolhidos.add(nome to tipoMap)
@@ -423,7 +422,7 @@ fun getNomePlayers() {
         player1 = readlnOrNull() ?: "-1"
     } while (!(player1.matches(regex)))
     do {
-        println("Digite o nome do primeiro player:")
+        println("Digite o nome do segundo player:")
         player2 = readlnOrNull() ?: "-1"
     } while (!(player2.matches(regex)))
 }
