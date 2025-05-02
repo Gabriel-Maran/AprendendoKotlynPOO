@@ -1,4 +1,4 @@
-package Pokemomons
+package Pokemon
 
 var pokemonsPlayer1 = mutableListOf<Pair<String, Map<String, List<String>>>>()
 var pokemonsPlayer2 = mutableListOf<Pair<String, Map<String, List<String>>>>()
@@ -312,6 +312,7 @@ val listaNomesPokemons = mapOf(
 var player1 = ""
 var player2 = ""
 
+//executa o game
 fun main() {
     getNomePlayers()
     pokemonsPlayer1 = formarTime(player1);
@@ -327,6 +328,7 @@ fun determinaVencedor() {
         println("\n\n============= ${i + 1}ª batalha =============")
         val (nome1, tipos1) = pokemonsPlayer1[i]
         val (nome2, tipos2) = pokemonsPlayer2[i]
+        //printa os nomes dos pokemons
         println("${pokemonsPlayer1[i].first}($player1) VS ${pokemonsPlayer2[i].first}($player2)")
 
         val resultado = batalha(tipos1, tipos2)
@@ -372,15 +374,21 @@ fun batalha(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String>>
 
         // Vez do jogador 1
         val criticoP1 = verificaCritico()
+        //printa o ataque e, caso seja critico, tbm
         println("Pokemon de $player1 ataca! ${if (criticoP1 > 1) "CRÍTICO! " else ""}[Dano: ${damageP1 * criticoP1}]")
+        //recebe o dano do pokemon
         lifeP2 -= damageP1 * criticoP1
+        //mostra a vida, caso seja menor que '0', mostra '0'
         println("HP do pokemon de $player2: ${maxOf(lifeP2, 0)}")
         if (lifeP2 <= 0) break
 
         // Vez do jogador 2
         val criticoP2 = verificaCritico()
+        //printa o ataque e, caso seja critico, tbm
         println("\nPokemon de $player2 contra-ataca! ${if (criticoP2 > 1) "CRÍTICO! " else ""}[Dano: ${damageP2 * criticoP2}]")
+        //recebe o dano do pokemon
         lifeP1 -= damageP2 * criticoP2
+        //mostra a vida, caso seja menor que '0', mostra '0'
         println("HP do pokemon de $player1: ${maxOf(lifeP1, 0)}")
 
         round++
