@@ -1,21 +1,5 @@
 package Pokemomons
 
-import RevisãoProva01.listPositivos
-
-val vantagensTipos = mapOf(
-    "fogo" to listOf("grama", "inseto", "gelo"),
-    "água" to listOf("fogo", "pedra", "terra"),
-    "grama" to listOf("água", "terra", "pedra"),
-    "elétrico" to listOf("água", "voador"),
-    "terra" to listOf("fogo", "elétrico", "venenoso"),
-    "pedra" to listOf("fogo", "inseto", "voador"),
-    "lutador" to listOf("pedra", "normal", "gelo"),
-    "voador" to listOf("inseto", "lutador", "grama"),
-    "psíquico" to listOf("lutador", "venenoso"),
-    "inseto" to listOf("grama", "psíquico"),
-    "gelo" to listOf("dragão", "grama", "terra", "voador"),
-    "dragão" to listOf("dragão")
-)
 var pokemonsPlayer1 = mutableListOf<Pair<String, Map<String, List<String>>>>()
 var pokemonsPlayer2 = mutableListOf<Pair<String, Map<String, List<String>>>>()
 val pokemons = Pokemons()
@@ -372,24 +356,68 @@ fun determinaVencedor() {
 
 //Realiza a batalha entre os pokemons, para ver quem irá ganhar
 fun batalha(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String>>): Int {
-    var v1 = 0
-    var v2 = 0
+    val dano = getDamage(tipos1, tipos2)
+    val damageP1 = dano.first()
+    val damageP2 = dano.last()
+    var lifeP1 = (90..120).random()
+    var lifeP2 = (90..120).random()
+    var winP1 = 0
+    var winP2 = 0
 
-    for (listaSuper in tipos1.values) {
-        for (t2 in tipos2.keys) {
-            if (listaSuper.contains(t2)) v1++
-        }
+    while (lifeP1 >= 0 && lifeP2 >= 0) {
+        println(damageP1)
+        println(damageP2)
+        println(lifeP1)
+        println(lifeP2)
+        lifeP2 = lifeP2 - (damageP1 * verificaCritico())
+        if (lifeP2 <= 0) break
+        lifeP1 = lifeP1 - (damageP2 * verificaCritico())
+        if (lifeP1 <= 0) break
     }
-    for (listaSuper in tipos2.values) {
-        for (t1 in tipos1.keys) {
-            if (listaSuper.contains(t1)) v2++
-        }
+    if (lifeP1 >= 0) {
+        winP2++
+    } else {
+        winP1++
     }
     return when {
-        v1 > v2 -> 1
-        v2 > v1 -> 2
+        winP1 > winP2 -> 1
+        winP2 > winP1 -> 2
         else -> 0
     }
+}
+
+//Verifica caso o pokemon de critico, dobrando seu dano
+fun verificaCritico(): Int {
+    val critico = ((1..24).random()) == 1
+    return if (critico) 2 else 1
+}
+
+//Determina o dano que cada pokemon dará, em cada batalha
+fun getDamage(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String>>): IntArray {
+    var damageP1 = (30..40).random()
+    var damageP2 = (30..40).random()
+    var multiplierP1 = 1;
+    var multiplierP2 = 1;
+
+    for (tipoP1 in tipos1.keys) {
+        val superEfetivoContra = tipos1[tipoP1] ?: emptyList()
+        for (tipoP2 in tipos2.keys) {
+            if (superEfetivoContra.contains(tipoP2)) {
+                multiplierP1 *= 2
+            }
+        }
+    }
+
+    for (tipoP2 in tipos2.keys) {
+        val superEfetivoContra = tipos2[tipoP2] ?: emptyList()
+        for (tipoP1 in tipos1.keys) {
+            if (superEfetivoContra.contains(tipoP1)) {
+                multiplierP2 *= 2
+            }
+        }
+    }
+
+    return intArrayOf(damageP1 * multiplierP1, damageP2 * multiplierP2);
 }
 
 //Cada vez que chamada, monta um time, baseado nas escolhas dos jodaores
@@ -407,7 +435,7 @@ fun formarTime(player: String): MutableList<Pair<String, Map<String, List<String
         val nome = listaNomesPokemons[num]!!
         var tipoMap = emptyMap<String, List<String>>()
         if (pokedex[num] != null) {
-            tipoMap = pokedex[num]!!.mapValues { it.value!! }
+            tipoMap = pokedex[num]?.mapValues { it.value ?: emptyList() } ?: emptyMap()
         }
         pokemonsEscolhidos.add(nome to tipoMap)
     }
