@@ -324,10 +324,10 @@ fun determinaVencedor() {
     var vitoriasP1 = 0
     var vitoriasP2 = 0
     for (i in 0..2) {
-        println("========= ${i + 1}ª batalha =========")
+        println("\n\n============= ${i + 1}ª batalha =============")
         val (nome1, tipos1) = pokemonsPlayer1[i]
         val (nome2, tipos2) = pokemonsPlayer2[i]
-        println("${pokemonsPlayer1[i].first} VS ${pokemonsPlayer2[i].first}")
+        println("${pokemonsPlayer1[i].first}($player1) VS ${pokemonsPlayer2[i].first}($player2)")
 
         val resultado = batalha(tipos1, tipos2)
 
@@ -345,11 +345,11 @@ fun determinaVencedor() {
             else -> println("Empate")
         }
     }
-    println("=========== Resultado Final ===========")
+    println("\n\n=========== Resultado Final ===========")
     when {
-        vitoriasP1 > vitoriasP2 -> println("Vencedor $player1")
-        vitoriasP1 < vitoriasP2 -> println("Vencedor $player2")
-        else -> println("Empate")
+        vitoriasP1 > vitoriasP2 -> println("🏆Vencedor $player1🏆")
+        vitoriasP1 < vitoriasP2 -> println("🏆Vencedor $player2🏆")
+        else -> println("⚖️Empate⚖️")
     }
     println("=======================================")
 }
@@ -357,32 +357,51 @@ fun determinaVencedor() {
 //Realiza a batalha entre os pokemons, para ver quem irá ganhar
 fun batalha(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String>>): Int {
     val dano = getDamage(tipos1, tipos2)
-    val damageP1 = dano.first()
-    val damageP2 = dano.last()
+    val (damageP1, damageP2) = dano
     var lifeP1 = (90..120).random()
     var lifeP2 = (90..120).random()
-    var winP1 = 0
-    var winP2 = 0
+    var round = 1
 
-    while (lifeP1 >= 0 && lifeP2 >= 0) {
-        println(damageP1)
-        println(damageP2)
-        println(lifeP1)
-        println(lifeP2)
-        lifeP2 = lifeP2 - (damageP1 * verificaCritico())
+    println("========= Batalha Pokémon Iniciada! =========")
+    println("Pokemon de $player1: ${lifeP1}HP | Dano: $damageP1")
+    println("Pokemon de $player2: ${lifeP2}HP | Dano: $damageP2")
+    println("---------------------------------------------")
+
+    while (lifeP1 > 0 && lifeP2 > 0) {
+        println("\n================ Round $round ================")
+
+        // Vez do jogador 1
+        val criticoP1 = verificaCritico()
+        println("Pokemon de $player1 ataca! ${if (criticoP1 > 1) "CRÍTICO! " else ""}[Dano: ${damageP1 * criticoP1}]")
+        lifeP2 -= damageP1 * criticoP1
+        println("HP do pokemon de $player2: ${maxOf(lifeP2, 0)}")
         if (lifeP2 <= 0) break
-        lifeP1 = lifeP1 - (damageP2 * verificaCritico())
-        if (lifeP1 <= 0) break
+
+        // Vez do jogador 2
+        val criticoP2 = verificaCritico()
+        println("\nPokemon de $player2 contra-ataca! ${if (criticoP2 > 1) "CRÍTICO! " else ""}[Dano: ${damageP2 * criticoP2}]")
+        lifeP1 -= damageP2 * criticoP2
+        println("HP do pokemon de $player1: ${maxOf(lifeP1, 0)}")
+
+        round++
+        println("----------------------------------------------")
     }
-    if (lifeP1 >= 0) {
-        winP2++
-    } else {
-        winP1++
-    }
+
     return when {
-        winP1 > winP2 -> 1
-        winP2 > winP1 -> 2
-        else -> 0
+        lifeP1 > lifeP2 -> {
+            println("\n🏆 VITÓRIA DE $player1!")
+            1
+        }
+
+        lifeP2 > lifeP1 -> {
+            println("\n🏆 VITÓRIA DE $player2!")
+            2
+        }
+
+        else -> {
+            println("\n⚖️ EMPATE!")
+            0
+        }
     }
 }
 
