@@ -1,7 +1,7 @@
 package Pokemon
 
-var pokemonsPlayer1 = mutableListOf<Pair<String, Map<String, List<String>>>>()
-var pokemonsPlayer2 = mutableListOf<Pair<String, Map<String, List<String>>>>()
+var pokemonsPlayer1 = mutableMapOf<String, Map<String, List<String>>>()
+var pokemonsPlayer2 = mutableMapOf<String, Map<String, List<String>>>()
 val pokemons = Pokemons()
 val pokedex = mapOf(
     1 to pokemons.bulbasaur,
@@ -315,8 +315,8 @@ var player2 = ""
 //executa o game
 fun main() {
     getNomePlayers()
-    pokemonsPlayer1 = formarTime(player1);
-    pokemonsPlayer2 = formarTime(player2);
+    pokemonsPlayer1 = formarTime(player1)
+    pokemonsPlayer2 = formarTime(player2)
     determinaVencedor()
 }
 
@@ -324,34 +324,30 @@ fun main() {
 fun determinaVencedor() {
     var vitoriasP1 = 0
     var vitoriasP2 = 0
+
+    val equipe1 = pokemonsPlayer1.entries.toList()
+    val equipe2 = pokemonsPlayer2.entries.toList()
+
     for (i in 0..2) {
         println("\n\n============= ${i + 1}ª batalha =============")
-        val (nome1, tipos1) = pokemonsPlayer1[i]
-        val (nome2, tipos2) = pokemonsPlayer2[i]
-        //printa os nomes dos pokemons
-        println("${pokemonsPlayer1[i].first}($player1) VS ${pokemonsPlayer2[i].first}($player2)")
+        val (nome1, tipos1) = equipe1[i]
+        val (nome2, tipos2) = equipe2[i]
 
+        println("$nome1 ($player1) VS $nome2 ($player2)")
         val resultado = batalha(tipos1, tipos2)
 
         when (resultado) {
-            1 -> {
-                println("Vencedor $player1")
-                vitoriasP1++
-            }
-
-            2 -> {
-                println("Vencedor $player2")
-                vitoriasP2++
-            }
-
+            1 -> { println("Vencedor: $player1"); vitoriasP1++ }
+            2 -> { println("Vencedor: $player2"); vitoriasP2++ }
             else -> println("Empate")
         }
     }
+
     println("\n\n=========== Resultado Final ===========")
     when {
-        vitoriasP1 > vitoriasP2 -> println("🏆Vencedor $player1🏆")
-        vitoriasP1 < vitoriasP2 -> println("🏆Vencedor $player2🏆")
-        else -> println("⚖️Empate⚖️")
+        vitoriasP1 > vitoriasP2 -> println("🏆 Vencedor $player1 🏆")
+        vitoriasP1 < vitoriasP2 -> println("🏆 Vencedor $player2 🏆")
+        else -> println("⚖️ Empate ⚖️")
     }
     println("=======================================")
 }
@@ -449,22 +445,19 @@ fun getDamage(tipos1: Map<String, List<String>>, tipos2: Map<String, List<String
 
 //Cada vez que chamada, monta um time, baseado nas escolhas dos jodaores
 //Utilizada para definir os pokemons que participarão das batalhas
-fun formarTime(player: String): MutableList<Pair<String, Map<String, List<String>>>> {
+fun formarTime(player: String): MutableMap<String, Map<String, List<String>>> {
     getListaPokemons()
-    val pokemonsEscolhidos = mutableListOf<Pair<String, Map<String, List<String>>>>()
-    var num: Int
+    val pokemonsEscolhidos = mutableMapOf<String, Map<String, List<String>>>()
     repeat(3) {
+        var num: Int
         do {
-            println("$player, digite o pokemons que deseja, entre os número 1–151.: ")
-            println("Ex: 1 - Bulbasaur")
-            num = readLine()?.toIntOrNull() ?: -1
-        } while (num < 1 || num > 151)
+            println("$player, digite o número do Pokémon (1–151):")
+            num = readlnOrNull()?.toIntOrNull() ?: -1
+        } while (num !in 1..151)
+
         val nome = listaNomesPokemons[num]!!
-        var tipoMap = emptyMap<String, List<String>>()
-        if (pokedex[num] != null) {
-            tipoMap = pokedex[num]?.mapValues { it.value ?: emptyList() } ?: emptyMap()
-        }
-        pokemonsEscolhidos.add(nome to tipoMap)
+        val tipoMap = pokedex[num]?.mapValues { it.value ?: emptyList() } ?: emptyMap()
+        pokemonsEscolhidos[nome] = tipoMap
     }
     return pokemonsEscolhidos
 }
@@ -485,7 +478,6 @@ fun getNomePlayers() {
 //Printa a lista com todos os pokemons
 fun getListaPokemons() {
     println("====== Pokemons Disponiveis para o time =======")
-    val listEscolha = mutableListOf<String>()
     for (i in 1..151) {
         println("$i : ${listaNomesPokemons[i]}")
     }
