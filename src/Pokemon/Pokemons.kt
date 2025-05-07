@@ -156,7 +156,7 @@ val pokedex = mapOf(
     150 to pokemons.mewtwo,
     151 to pokemons.mew
 )
-val listaNomesPokemons = mapOf(
+val mapNomesPokemons = mapOf(
     1 to "bulbasaur",
     2 to "ivysaur",
     3 to "venusaur",
@@ -455,7 +455,7 @@ fun formarTime(player: String): MutableMap<String, Map<String, List<String>>> {
             num = readlnOrNull()?.toIntOrNull() ?: -1
         } while (num !in 1..151)
 
-        val nome = listaNomesPokemons[num]!!
+        val nome = mapNomesPokemons[num]!!
         val tipoMap = pokedex[num]?.mapValues { it.value ?: emptyList() } ?: emptyMap()
         pokemonsEscolhidos[nome] = tipoMap
     }
@@ -479,7 +479,7 @@ fun getNomePlayers() {
 fun getListaPokemons() {
     println("====== Pokemons Disponiveis para o time =======")
     for (i in 1..151) {
-        println("$i : ${listaNomesPokemons[i]}")
+        println("$i : ${mapNomesPokemons[i]}")
     }
     println("===============================================")
 }
