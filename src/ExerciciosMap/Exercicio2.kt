@@ -1,7 +1,5 @@
 package ExerciciosMap
 
-import com.sun.management.GcInfo
-
 fun main() {
     val player1 = Player("Gabriel");
     player1.addDanoSofrido(10.0);
