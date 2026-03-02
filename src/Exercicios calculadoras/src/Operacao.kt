@@ -1,0 +1,4 @@
+enum class Operacao {
+    SOMA, SUBTRACAO, MULTIPLICACAO, DIVISAO, VAZIO
+}
+
